@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./App.css";
 import { is10DigitNumber, isFutureDate } from "./utils";
 
@@ -8,6 +8,8 @@ function App() {
 	const [email, setEmail] = useState("");
 	const [phoneNumber, setPhoneNumber] = useState("");
 	const [dob, setDob] = useState("");
+
+	const modalContentRef = useRef(null);
 
 	const handleUsernameChange = (e) => {
 		setUsername(e.target.value);
@@ -38,7 +40,23 @@ function App() {
 		if (isFutureDate(dob)) {
 			alert("Invalid date of birth. Date of birth cannot be in the future");
 		}
-		console.log(username, ":", email, ":", phoneNumber, ":", dob);
+		// console.log(username, ":", email, ":", phoneNumber, ":", dob);
+		setUsername("");
+		setEmail("");
+		setPhoneNumber("");
+		setDob("");
+		setIsModalOpen(false);
+	};
+
+	const handleModalClose = (e) => {
+		const elClickedOn = e.target;
+
+		if (
+			modalContentRef.current &&
+			!modalContentRef.current.contains(elClickedOn)
+		) {
+			setIsModalOpen(false);
+		}
 	};
 
 	return (
@@ -48,8 +66,8 @@ function App() {
 				Open Form
 			</button>
 			{isModalOpen && (
-				<div className="modal">
-					<div className="modal-content">
+				<div className="modal" onClick={handleModalClose}>
+					<div className="modal-content" ref={modalContentRef}>
 						<h2>Fill Details</h2>
 						<form onSubmit={handleSubmit}>
 							<label htmlFor="username">Username:</label>
